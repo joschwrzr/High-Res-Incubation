@@ -8,8 +8,6 @@ output:
     toc_float: yes
 runtime: shiny
 fontsize: 10pt
-resource_files:
-- EGU/vPICO/input/Kruemel_3_Device.png
 ---
 
 ```{r setup, include=FALSE}
@@ -48,7 +46,7 @@ rm(HvsB)
 ```
 
 ```{r measured, message=FALSE, warning=FALSE, out.width = '50%'}
-#setwd("~/Documents/Studium/Geographische Umweltforschung/AWI/Treat/Siikaneva/EGU/vPICO/")
+
 
 frst <- lm(CO2_ppm~DiffTime, data=HJ_a %>% filter(DiffTime <= 9*60 ))
 scnd <- lm(CO2_ppm~DiffTime, data=HJ_a %>% filter(DiffTime >= 9*60 ))
@@ -399,6 +397,10 @@ With our new high resolution incubation set up we are able to capture the time i
 With the high resolution measurement and the model we can find the actual ratio of $\frac{C_g}{C_w}$. Well, I am on that...
 
 This is a major improvement compared to traditional incubation measurements and increases the accuracy and robustness of $CO_2$ flux estimations.
+
+## Acknowledgements
+
+This site was funded by the [FluxWIN project, ERC H2020 #851181](https://www.awi.de/en/science/junior-groups/fluxwin.html)
 
 ```{r}
 
