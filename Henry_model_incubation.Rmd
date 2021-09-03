@@ -1,9 +1,9 @@
 ---
-title: "Incubation Set-up"
+title: "Henrys Law on a High Resolution Incubation Set-up"
 author: "Johanna Schwarzer"
 date: "4/27/2021"
 output:
-  html_document:
+  bookdown::html_document2:
     toc: yes
     toc_float: yes
 runtime: shiny
@@ -15,9 +15,9 @@ knitr::opts_chunk$set(echo = F)
 
 ```
 
-## High resolution incubation set up
+# High resolution incubation set up
 
-We are using an unconventional incubation set up, that allows us to measure $CO_2$ production as it is produced. We use a [LICOR trace gas analyzer](https://www.licor.com/env/products/trace_gas/LI-7810), which is directly connected to the jar containing the soil sample.
+To measure greenhouse gas emissions ($CO_2$ and $CH_4$) from soil samples, we are using an unconventional incubation set up, that allows us to follow gas production rates in a very high resolution. We use a [LICOR trace gas analyzer](https://www.licor.com/env/products/trace_gas/LI-7810), which is directly connected to the jar containing the soil sample.
 
 ![measurement set-up](input/Kruemel_3_Device.png){#id .class width=50% height=50%}
 
@@ -45,7 +45,7 @@ rm(HvsB)
 
 ```
 
-```{r measured, message=FALSE, warning=FALSE, out.width = '50%'}
+```{r measured, message=FALSE, warning=FALSE, fig.cap = "Single measurement of $CO_2$ concentration with fittet linear regression for ther first 9 minutes (white) and after the first 9 minutes (lila).", out.width = '50%'}
 
 
 frst <- lm(CO2_ppm~DiffTime, data=HJ_a %>% filter(DiffTime <= 9*60 ))
@@ -55,7 +55,7 @@ library(ggplot2)
 lm<-HJ_a %>%
   ggplot( aes(x=DiffTime, y=CO2_ppm)) +
   geom_line(color="black", size=0.6) +
-  ggtitle("CO2 flux during a single measurement") +
+  #ggtitle("CO2 flux during a single measurement") +
   ylab("CO2 in [ppm]") +
   xlab('time in [sec]')+
   theme_minimal()+
@@ -87,12 +87,12 @@ lm
  
 ```
 
-Let's look at the linear models in more detail, by producing a linear model for every 3 minutes of the measurement. Slope and intercept of all these models are shown below: The first model (no.1 in the y-axis) is the linear regression for the first 3 minutes, the 2nd for minute 3 to 6 and so on. On the x-axes intercept (left) and slope (right) of each model are plotted. The slope is decreasing in the first minutes, but after a certain time it stays stable (at around 0.021). This is the actual slope we wanted to see. YAY!
+Let's look at the linear model in more detail, by producing a linear model for every 3 minutes of the measurement. Slope and intercept of all these models are shown below: The first model (no.1 in the y-axis) is the linear regression for the first 3 minutes, the 2nd for minute 3 to 6 and so on. On the x-axes intercept (left) and slope (right) of each model are plotted. The slope is decreasing in the first minutes, but after a certain time it stays stable (at around 0.021). This is the actual slope we are interested in. YAY!
 
 But why is the slope different in the beginning? 
 The blame is on Henry and his law.
 
-```{r linear model, echo=FALSE,  message=FALSE, warning=FALSE, out.width = '50%'}
+```{r linearmodel, echo=FALSE,  message=FALSE, warning=FALSE,  fig.cap = "Linear model for every 3 minutes of $CO_2$ measured in a single measurement.", out.width = '50%'}
 
 library(nlme)
 lin_regr <- function(data, dt){
@@ -111,7 +111,7 @@ plot(intervals(flm_HJ_a))
 ```
 
 
-## Henry's Law
+# Henry's Law
 
 The [Law of Henry](http://satellite.mpic.de/henry/) describes the solubility of gases in water. If you have a bottle of sparkling soda and you open it up, the dissolved $CO_2$ is gassing out until the Henry-equilibrium between the water and the gas phase above the water (so, the air in the room) is reached: most of the $CO_2$ in your soda will be in the atmosphere around you- but not all of it. A certain amount of $CO_2$ will stay dissolved in the water. If you want to know how much $CO_2$ is still in the water, you can ask Henry.
 
@@ -124,7 +124,7 @@ Let's model it:
 
 
 
-### get the equations:
+## get the equations:
 
 So, **microbial activity** produces $CO_2$ from soil carbon with the rate **k1**. Other than presumed above, the $CO_2$ will not directly be released into the gas phase, but will dilute in the aqueous phase:
 
@@ -149,7 +149,7 @@ The rate constants **kh1** and **kh2** depend on how fast the $CO_2$ is transpor
 
 
 
-### Implement 
+## Implement 
 
 Now the processes described above are implemented, as a system of differential equations **CHenry**. With the degradation of C in the soil $\frac{dC}{dt}$:
 
@@ -213,7 +213,7 @@ wrapperCmess = function(time, S, W, G, k1, kh1, V_w, V_g){
 ```
 
 
-## Model the incubation
+# Model the incubation
 
 Define the input values:
 
@@ -392,13 +392,14 @@ shinyApp(ui=ui, server=server, options = list(height = 500))
 Maybe you want to try with 690 ppm in the incubator, a microbial degradation rate of 0.37 $\frac{mg(CO2)}{g(Soil) day}$ and a diffusion rate of 0.0035...
 
 
-## Conclusion
+# Conclusion
+
 With our new high resolution incubation set up we are able to capture the time it takes to reach the Henry equilibrium. Actually, the Henry equilibrium is never reached as long $CO_2$ is produced by the microorganisms. Maybe you have noted that? The ratio of $\frac{C_g}{C_w}$ in the model never reached *1.186*. 
 With the high resolution measurement and the model we can find the actual ratio of $\frac{C_g}{C_w}$. Well, I am on that...
 
 This is a major improvement compared to traditional incubation measurements and increases the accuracy and robustness of $CO_2$ flux estimations.
 
-## Acknowledgements
+# Acknowledgements
 
 This site was funded by the [FluxWIN project, ERC H2020 #851181](https://www.awi.de/en/science/junior-groups/fluxwin.html)
 
