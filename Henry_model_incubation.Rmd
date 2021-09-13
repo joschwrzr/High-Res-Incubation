@@ -6,6 +6,7 @@ output:
   bookdown::html_document2:
     toc: yes
     toc_float: yes
+bibliography: input/Rmd_Henrys-Law.bib
 runtime: shiny
 fontsize: 10pt
 ---
@@ -42,6 +43,11 @@ HvsB$Date_Time <- as.POSIXct(paste(HvsB$DATE_date, HvsB$TIME_time), format="%Y-%
 HJ_a <-HvsB  %>% filter(as.character(TIME_time) > "15:50:00" & as.character(TIME_time) < "16:31:00")
 HJ_a$DiffTime <-round(difftime(HJ_a$Date_Time, HJ_a$Date_Time[1]), 3)
 rm(HvsB)
+
+
+# correct format
+HJ_a$DiffTime <- as.numeric(HJ_a$DiffTime)
+HJ_a$CO2_ppm <- as.numeric(HJ_a$CO2_ppm)
 
 ```
 
@@ -113,7 +119,7 @@ plot(intervals(flm_HJ_a))
 
 # Henry's Law
 
-The [Law of Henry](http://satellite.mpic.de/henry/) describes the solubility of gases in water. If you have a bottle of sparkling soda and you open it up, the dissolved $CO_2$ is gassing out until the Henry-equilibrium between the water and the gas phase above the water (so, the air in the room) is reached: most of the $CO_2$ in your soda will be in the atmosphere around you- but not all of it. A certain amount of $CO_2$ will stay dissolved in the water. If you want to know how much $CO_2$ is still in the water, you can ask Henry.
+The [Law of Henry](http://satellite.mpic.de/henry/) describes the solubility of gases in water [@sander_compilation_2015]. If you have a bottle of sparkling soda and you open it up, the dissolved $CO_2$ is gassing out until the Henry-equilibrium between the water and the gas phase above the water (so, the air in the room) is reached: most of the $CO_2$ in your soda will be in the atmosphere around you- but not all of it. A certain amount of $CO_2$ will stay dissolved in the water. If you want to know how much $CO_2$ is still in the water, you can ask Henry.
 
 Thus, we can apply Henry's law to understand the non-linear increase in the beginning of our incubation measurement: As the amount of $CO_2$ in the incubator can be different from the $CO_2$ amount in the lab, where we are measuring, the aqueous phase in the sample newly equilibrates to a different $CO_2$ concentration (like, when you open the soda bottle). If the $CO_2$ concentration in the Incubator was higher than in the lab, $CO_2$ gasses out (as seen above with the higher slope in the measurement). If the $CO_2$ concentration in the incubator was lower, $CO_2$ is dissolved in the aqueous phase of the sample (so the slope in the beginning is lower- it can even be negative).
 
@@ -402,6 +408,9 @@ This is a major improvement compared to traditional incubation measurements and 
 # Acknowledgements
 
 This site was funded by the [FluxWIN project, ERC H2020 #851181](https://www.awi.de/en/science/junior-groups/fluxwin.html)
+
+
+# References
 
 ```{r}
 
