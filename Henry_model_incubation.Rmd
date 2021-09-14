@@ -1,7 +1,9 @@
 ---
-title: "Henrys Law on a High Resolution Incubation Set-up"
+title: "High Resolution Incubation Set-up"
+subtitle: "Incubation Model considering Henry's Law"
 author: "Johanna Schwarzer"
-date: "4/27/2021"
+date: "14/09/2021"
+tags: [incubation, GHGflux]
 output:
   bookdown::html_document2:
     toc: yes
@@ -11,18 +13,32 @@ runtime: shiny
 fontsize: 10pt
 ---
 
-```{r setup, include=FALSE}
+<style type="text/css">
+.caption {
+    font-size: x-small;
+}
+</style>
+
+```{r options, include=FALSE}
 knitr::opts_chunk$set(echo = F)
 
 ```
 
-# High resolution incubation set up
+# Incubation set up
 
-To measure greenhouse gas emissions ($CO_2$ and $CH_4$) from soil samples, we are using an unconventional incubation set up, that allows us to follow gas production rates in a very high resolution. We use a [LICOR trace gas analyzer](https://www.licor.com/env/products/trace_gas/LI-7810), which is directly connected to the jar containing the soil sample.
+To measure greenhouse gas emissions, namely $CO_2$ and $CH_4$ from soil samples, we are using an unconventional incubation set up, that allows us to follow gas production rates as they are produced in a very high resolution. We use a [LICOR trace gas analyzer](https://www.licor.com/env/products/trace_gas/LI-7810), which is directly connected to the jar containing the soil sample (figure \@ref(fig:scheme)).
 
-![measurement set-up](input/Kruemel_3_Device.png){#id .class width=50% height=50%}
 
-With this set up, we obtain high resolution measurements, which are much more reliable compared to manual samples, where only two samples are taken: one in the beginning of enclosure time and one at the end (which, for sure gives a beautiful linear regression). With our set up we obtain a continuous measurement series with a resolution of $\frac{1}{sec}$, for the whole enclosure time (figure below). However, one obstacle is that we actually don't see a linear increase, as you can see in the plot below: In the beginning of the measurement the slope is much higher than after ca. 9 minutes.
+
+
+```{r scheme, fig.cap = "Measurement set up: a glas jar containing the soil sample that is incubated is connected to a trace gas analyzer", fig.align='center', out.width = '50%'}
+
+knitr::include_graphics("input/Kruemel_3_Device.png")
+
+```
+
+
+With this set up, we obtain high resolution measurements, which are much more reliable compared to manual samples, where only two samples are taken: One in the beginning of enclosure time and one at the end (which, for sure gives a beautiful linear regression). With our set up we obtain a continuous measurement series with a resolution of $\frac{1}{sec}$, for the whole enclosure time (figure \@ref(fig:measured)). However, one obstacle is that we actually don't see a linear increase: In the beginning of the measurement the slope is much higher than after ca. 9 minutes.
 
 ```{r data, include=FALSE}
 library(tidyverse)
@@ -51,7 +67,7 @@ HJ_a$CO2_ppm <- as.numeric(HJ_a$CO2_ppm)
 
 ```
 
-```{r measured, message=FALSE, warning=FALSE, fig.cap = "Single measurement of $CO_2$ concentration with fittet linear regression for ther first 9 minutes (white) and after the first 9 minutes (lila).", out.width = '50%'}
+```{r measured, message=FALSE, warning=FALSE, fig.cap = "Single measurement of $CO_2$ concentration with fittet linear regression for ther first 9 minutes (white) and after the first 9 minutes (lila).", fig.align='center', out.width = '50%'}
 
 
 frst <- lm(CO2_ppm~DiffTime, data=HJ_a %>% filter(DiffTime <= 9*60 ))
@@ -93,12 +109,12 @@ lm
  
 ```
 
-Let's look at the linear model in more detail, by producing a linear model for every 3 minutes of the measurement. Slope and intercept of all these models are shown below: The first model (no.1 in the y-axis) is the linear regression for the first 3 minutes, the 2nd for minute 3 to 6 and so on. On the x-axes intercept (left) and slope (right) of each model are plotted. The slope is decreasing in the first minutes, but after a certain time it stays stable (at around 0.021). This is the actual slope we are interested in. YAY!
+Let's look at the linear model in more detail, by producing a linear model for every 3 minutes of the measurement (black line in figure \@ref(fig:measured)). Slope and intercept of all these models are shown in figure \@ref(fig:linearmodel): The first model (no.1 in the y-axis) is the linear regression for the first 3 minutes, the 2nd for minute 3 to 6 and so on. On the x-axes intercept (left) and slope (right) of each model are plotted together with standard deviation. The slope is decreasing in the first minutes, but after a certain time it stays stable (at around 0.021). This is the actual slope we are interested in. YAY!
 
 But why is the slope different in the beginning? 
 The blame is on Henry and his law.
 
-```{r linearmodel, echo=FALSE,  message=FALSE, warning=FALSE,  fig.cap = "Linear model for every 3 minutes of $CO_2$ measured in a single measurement.", out.width = '50%'}
+```{r linearmodel, echo=FALSE,  message=FALSE, warning=FALSE,  fig.cap = "Linear model for every 3 minutes of $CO_2$ measured in a single measurement.", fig.align='center', out.width = '50%'}
 
 library(nlme)
 lin_regr <- function(data, dt){
@@ -136,22 +152,23 @@ So, **microbial activity** produces $CO_2$ from soil carbon with the rate **k1**
 
 $$C  \rightarrow  CO_{2 (aq)}$$ 
 
-in the aqueous phase $CO_2$ will outgas at the rate of **kh1** to the gas phase:
+In the aqueous phase $CO_2$ will outgas at the rate of **kh1** to the gas phase:
 
-$$CO_{2 (aq)} \rightarrow CO_{2 (g)}$$
+$$CO_{2 (aq)} \xrightarrow{kh1} CO_{2 (g)}$$
 
 But $CO_2$ in the gas phase will, as well, dilute in the aqueous phase at the rate **kh2**:
 
-$$CO_{2 (g)} \rightarrow CO_{2 (aq)}$$
+$$CO_{2 (g)} \xrightarrow{kh2} CO_{2 (aq)}$$
 
 
-The ratio of the two rates **kh1** and **kh2** is described by Henry's Law : $K_H = \frac{kh1}{kh2}$
+
+The ratio of the two rate constants **kh1** and **kh2** is described by Henry's Law : $$K_H = \frac{kh1}{kh2}$$
 
 Here we use the dimensionless Henry constant, which uses the amount of $CO_2$ in the gas phase divided by the amount of $CO_2$ in the aqueous phase both in $\frac{mol}{l}$.
 
 $$K_H = \frac{c_g}{c_{aq}}= \frac{kh1}{kh2}= 1.186$$ 
 
-The rate constants **kh1** and **kh2** depend on how fast the $CO_2$ is transported to the gas-liquid phase boundary. When stirring, the rate constant **kh1** is faster, $CO_2$ outgases faster, and dilutes faster into the liquid phase (**kh2** is then faster, too).
+The rate constants **kh1** and **kh2** depend on how fast the $CO_2$ is transported to the gas-liquid phase boundary. When stirring, the rate constant **kh1** is higher and $CO_2$ outgases faster, and also dilutes faster into the liquid phase (**kh2** is then higher too). The ratio of both stays constant at $K_H$.
 
 
 
@@ -169,7 +186,7 @@ And the $CO_2$ in the gas phase $\frac{dCO_{2(g)}}{dt}$ outgassing from the wate
 
 $$\frac{dCO_{2(g)}}{dt} = kh1 \cdot CO_{2(aq)} \cdot \frac{V_w}{V_g} - kh2 \cdot CO_{2(g)} \cdot \frac{V_w}{V_g}$$
 
-These differential equations can then be solved with the ode() function from the package deSolve in a wrapper function:
+These differential equations can then be solved with the `ode()` function from the package `deSolve` in a wrapper function:
 
 ```{r henry , echo=TRUE}
 
@@ -219,7 +236,7 @@ wrapperCmess = function(time, S, W, G, k1, kh1, V_w, V_g){
 ```
 
 
-# Model the incubation
+# Incubation Model
 
 Define the input values:
 
@@ -283,18 +300,20 @@ kh1 = 0.01
 ```
 
 Now run the model with the parameters above for 30 minutes. The green dashed line is what we can measure in our experiment. In the model we can also see the amount of $CO_2$ dissolved in the soil aqueous phase.
-The yellow line is the ratio of the $CO_2$ amount in the gas and in the aqueous phase: after the first few minutes, it is nearly stable, because the equilibrium is reached.
+The yellow line in figure \@ref(fig:show) is the ratio of the $CO_2$ amount in the gas and in the aqueous phase: after the first few minutes, it is nearly stable, because a equilibrium is nearly reached. The slow linear increase after 500 seconds is due to the microbial $CO_2$ production unsettling the equilibrium by constantly increasing the $CO_2$ concentration in the liquid phase an thereby in the whole system.
+
 ```{r run, echo=TRUE, out.width = '50%'}
 # 30 minutes --------
 t=30*60
 Cmess <- wrapperCmess(time=seq(0, t, by = t/10000),S=C, W=W, G=G, k1=k1, kh1=kh1, V_w =V_w, V_g= V_g)
 ```
 
-```{r show, out.width = '50%'}
+```{r show, fig.cap = "Modelled output for 30 minutes. $CO_2$ concentration in the gas phase (green dashed line), $CO_2$ concentration in the liquid phase (green line), Concentration ratio of $CO_2$ in the gas and in the liquid phase (yellow line, left axis).", fig.align='center', out.width = '80%'}
+
 # plot mol/l----------------
 par(mar=c(5,5,3,4))
 plot(G~time, data = Cmess, ylim=c(1.5e-5, 2.02e-5),
-     main ='approaching the Henry equilibrium in 30 min',
+     #main ='approaching the Henry equilibrium in 30 min',
      xlab = 'Time [s]', ylab = 'CO2[mol/l]', 
      cex.lab = 1,  
      col = 'seagreen3',
@@ -320,9 +339,9 @@ legend('bottomright', bty = 'n', legend = c('CO2 in gas phase', 'CO2 in the liqu
 ```
 
 
-## find the fit
+## Find the Fit
 
-now that we have the model we can also fit it to the measured data: by adjusting the input variable for the 
+Now that we have the model we can also fit it to the measured data: by adjusting the input variable for the 
 
 - amount of $CO_2$ in the incubator (aqueous phase is equilibrated to)
 - rate at which the microbes degrade the carbon in the soil
