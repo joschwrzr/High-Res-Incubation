@@ -257,8 +257,8 @@ m = 1.02 # microbial degradation rate [mg(CO2) / g(Soil) day]
 
 P_TOC = 0.45  # TOC-content of Soil sample [%]
 
-k1 =  (m * 1e-3 * 12/44 *1/P_TOC) * 1/day # abbaurate pro sec [1/s] 
-tau = 1/k1 *1/day #abbaurate in tagen  [days]
+k1 =  (m * 1e-3 * 12/44 *1/P_TOC) * 1/day # degradation per sec [1/s] 
+tau = 1/k1 *1/day #degradation per day  [days]
 
 # Gas volume of measurement set up
 V_g = 0.22 # [l]
@@ -281,15 +281,15 @@ C = C_g*P_TOC/12/V_w   # degradable Carbon [mol/l]
 # CO2 amounts ---------------
 
 ppm_g = 450 # CO2 in the gas-phase [ppm]
-G = (ppm_g *1e-6*101325)/(R*Temp*1000)  # CO2 in has [mol/l]
+G = (ppm_g *1e-6*101325)/(R*Temp*1000)  # CO2 in gas [mol/l]
 
-ppm_w = 450 # water phase eqilibrated to atmospheric CO2 in [ppm]
+ppm_w = 450 # water phase eqilibrate to atmospheric CO2 in [ppm]
 W=((ppm_w *1e-6*101325)/(R*Temp*1000))/KH # CO2 in the water [mol/l]
 
 
-C_ges_sys_mol = C*V_w + W*V_w + G*V_g   # total C-CO2 in the System [mol]
+C_ges_sys_mol = C*V_w + W*V_w + G*V_g   # total C-CO2 in the system [mol]
 
-# henry constant dimensionless
+# Henry constant dimensionless
 KH =1.186
 
 # degas rate ------------
