@@ -184,7 +184,7 @@ $$\frac{dCO_{2(aq)}}{dt} = k1 \cdot C - kh1 \cdot CO_{2(aq)} + kh2 \cdot CO_{2(g
 
 And the $CO_2$ in the gas phase $\frac{dCO_{2(g)}}{dt}$ outgassing from the water phase $kh1 \cdot CO_{2(aq)}$. The ratio $\frac{V_w}{V_g}$ accounts for the fact, that the volume of the liquid reservoir is different from the gas reservoir, so that the *concentration* change is different when a $CO_2$ molecule passes the phase boundary.
 
-$$\frac{dCO_{2(g)}}{dt} = \frac{V_w}{V_g} \cdot \left( kh1 \cdot CO_{2(aq)} \cdot \frac{V_w}{V_g} - kh2 \cdot CO_{2(g)} \right)$$
+$$\frac{dCO_{2(g)}}{dt} = \frac{V_w}{V_g} \cdot \left( kh1 \cdot CO_{2(aq)}  - kh2 \cdot CO_{2(g)} \right)$$
 
 These differential equations can then be solved with the `ode()` function from the package `deSolve` in a wrapper function:
 
