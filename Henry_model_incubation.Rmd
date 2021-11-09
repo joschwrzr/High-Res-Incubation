@@ -38,7 +38,7 @@ knitr::include_graphics("input/Kruemel_3_Device.png")
 ```
 
 
-With this set up, we obtain high resolution measurements, which are much more reliable compared to manual samples, where only two samples are taken: One in the beginning of enclosure time and one at the end (which, for sure gives a beautiful linear regression). With our set up we obtain a continuous measurement series with a resolution of $\frac{1}{sec}$, for the whole enclosure time (figure \@ref(fig:measured)). However, one obstacle is that we actually don't see a linear increase: In the beginning of the measurement the slope is much higher than after ca. 9 minutes.
+With this set up, we obtain high resolution measurements, which are much more reliable compared to manual samples, where only two samples are taken: One in the beginning of enclosure time and one at the end (which, for sure gives a beautiful linear regression). With our set up we obtain a continuous measurement series with a resolution of $\frac{1}{sec}$, for the whole enclosure time (figure \@ref(fig:measured)). However, one obstacle is that we actually don't see a linear increase: In the beginning of the measurement the slope is much higher than after about 9 minutes.
 
 ```{r data, include=FALSE}
 library(tidyverse)
