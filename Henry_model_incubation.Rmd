@@ -19,6 +19,9 @@ fontsize: 10pt
 }
 </style>
 
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5657194.svg)](https://doi.org/10.5281/zenodo.5657194)
+
 ```{r options, include=FALSE}
 knitr::opts_chunk$set(echo = F)
 
