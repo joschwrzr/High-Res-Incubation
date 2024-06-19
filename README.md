@@ -4,5 +4,4 @@ We are using an unconventional incubation set up, that allows us to measure CO2 
 
 A model of an aerobic high resolution incubation setup considering Henry's Law. 
 
-https://ghg-in-permafrost.awi.de/
 
